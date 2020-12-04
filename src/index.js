@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
+import Example from './hooks.js'
 
 function Square(props) {
     return (
@@ -118,7 +119,10 @@ class Game extends Component {
 }
 
 ReactDOM.render(
-    <Game />,
+    <div>
+        <Game />
+        <Example />
+    </div>,
     document.getElementById('root')
 )
 
