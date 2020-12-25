@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
-import Example from './hooks.js'
+import Count from './hooks.js'
 
 function Square(props) {
     return (
@@ -121,7 +121,7 @@ class Game extends Component {
 ReactDOM.render(
     <div>
         <Game />
-        <Example />
+        <Count />
     </div>,
     document.getElementById('root')
 )
