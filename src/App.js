@@ -1,7 +1,13 @@
 import React, { Component } from "react";
+import Count from "./Count";
 
 export default function App() {
-    return <Game />
+    return (
+        <div>
+            <Game />
+            <Count />
+        </div>
+    )
 }
 
 class Square extends Component {

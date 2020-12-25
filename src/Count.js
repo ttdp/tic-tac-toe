@@ -11,13 +11,10 @@ export default function Count() {
         <div>
             <p>You clicked {count} times</p>
             <button onClick={() => setCount(count + 1)}>
-                Click me
-            </button>
-            <button onClick={() => setCount(prev => prev + 1)}>
-                +
-            </button>
+                Click me + 1
+            </button>&nbsp;
             <button onClick={() => setCount(prev => prev - 1)}>
-                -
+                Click me - 1
             </button>
         </div>
     )
