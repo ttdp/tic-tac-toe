@@ -12,9 +12,16 @@ export default function App() {
 
 class Square extends Component {
     render() {
+        let value
+        if (this.props.isWinner) {
+            value = <strong>{this.props.value}</strong>
+        } else {
+            value = this.props.value
+        }
+
         return (
             <button className="square" onClick={this.props.onClick}>
-                {this.props.value}
+                {value}
             </button>
         )
     }
@@ -25,6 +32,7 @@ class Board extends Component {
         return <Square
             value={this.props.squares[i]}
             onClick={() => this.props.onClick(i)}
+            isWinner={this.props.winnerLine.includes(i)}
         />
     }
 
@@ -66,6 +74,7 @@ class Game extends Component {
         const history = this.state.history.slice(0, this.state.stepNumber + 1)
         const current = history[history.length - 1]
         const squares = current.squares.slice()
+
         if (calculateWinner(squares) || squares[i]) {
             return
         }
@@ -112,7 +121,9 @@ class Game extends Component {
 
         let status
         if (winner) {
-            status = "Winner: " + winner
+            status = "Winner: " + winner.player
+        } else if (!current.squares.includes(null)) {
+            status = "Draw"
         } else {
             status = "Next player: " + (this.state.xIsNext ? 'X' : 'O')
         }
@@ -123,6 +134,7 @@ class Game extends Component {
                     <Board
                         squares={current.squares}
                         onClick={(i) => this.handleClick(i)}
+                        winnerLine={winner ? winner.line : []}
                     />
                 </div>
                 <div className="game-info">
@@ -152,7 +164,7 @@ function calculateWinner(squares) {
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i]
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-            return squares[a]
+            return {"player": squares[a], "line": [a, b, c]}
         }
     }
 
