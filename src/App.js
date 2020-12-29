@@ -29,23 +29,19 @@ class Board extends Component {
     }
 
     render() {
+        let squares = []
+        for (let row = 0; row < 3; row ++) {
+            let boardRow = []
+            for (let col = 0; col < 3; col ++) {
+                const position =  row * 3 + col
+                boardRow.push(<span key={position}>{this.renderSquare(position)}</span>)
+            }
+            squares.push(<div className="board-row" key={row}>{boardRow}</div>)
+        }
+
         return (
             <div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
+                {squares}
             </div>
         )
     }
@@ -56,11 +52,14 @@ class Game extends Component {
         super(props)
         this.state = {
             history: [{
-                squares: Array(9).fill(null)
+                squares: Array(9).fill(null),
+                position: null
             }],
             stepNumber: 0,
-            xIsNext: true
+            xIsNext: true,
+            isDescending: true
         }
+        this.handleSort = this.handleSort.bind(this)
     }
 
     handleClick(i) {
@@ -73,10 +72,17 @@ class Game extends Component {
         squares[i] = this.state.xIsNext ? "X" : "O"
         this.setState({
             history: history.concat([{
-                squares: squares
+                squares: squares,
+                position: i
             }]),
             stepNumber: history.length,
             xIsNext: !this.state.xIsNext
+        })
+    }
+
+    handleSort() {
+        this.setState({
+            isDescending: !this.state.isDescending
         })
     }
 
@@ -93,10 +99,13 @@ class Game extends Component {
         const winner = calculateWinner(current.squares)
 
         const moves = history.map((step, move) => {
-            const desc = move ? "Go to move #" + move : "Go to game start"
+            const location = calculateLocation(step.position)
+            const desc = move ? "Go to move #" + move + " " + location: "Go to game start"
             return (
                 <li key={move}>
-                    <button onClick={() => this.jumpTo(move)}>{desc}</button>
+                    <button onClick={() => this.jumpTo(move)}>
+                        {move === this.state.stepNumber ? <b>{desc}</b> : desc}
+                    </button>
                 </li>
             )
         })
@@ -117,8 +126,11 @@ class Game extends Component {
                     />
                 </div>
                 <div className="game-info">
-                    <div>{status}</div>
-                    <ol>{moves}</ol>
+                    <div>
+                        {status}
+                        <p><button onClick={this.handleSort}>Sort</button></p>
+                    </div>
+                    <ol>{this.state.isDescending ? moves : moves.reverse()}</ol>
                 </div>
             </div>
         )
@@ -145,4 +157,20 @@ function calculateWinner(squares) {
     }
 
     return null
+}
+
+function calculateLocation(position) {
+    const locations = {
+        "0": "(0, 0)",
+        "1": "(0, 1)",
+        "2": "(0, 2)",
+        "3": "(1, 0)",
+        "4": "(1, 1)",
+        "5": "(1, 2)",
+        "6": "(2, 0)",
+        "7": "(2, 1)",
+        "8": "(2, 2)",
+    }
+    
+    return locations[position]
 }
